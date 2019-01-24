@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.0.min.js" integrity="sha256-RTQy8VOmNlT6b2PIRur37p6JEBZUE7o8wPgMvu18MC4="
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="container" style="padding: 50px;">
+        {{{ body }}}
+    </div>
+
+    <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+
+
+    <script>
+        const pusher = new Pusher('ab15b9c3ad48b049dc19', { cluster: 'us2' });
+
+        pusher.connection.bind('connected', function() {
+            axios.defaults.headers.common['X-Socket-Id'] = pusher.connection.socket_id;
+        });
+
+        pusher.subscribe('notifications')
+              .bind('POST_CREATED', function(post) {
+                console.log('EVENTO POST_CREATED ACIONADO NO FRONT', post);
+                const notification = new Notification('A new post has been created....');
+                notification.onclick = function(event) {
+                    window.location.href = `/posts/${post._id}`;
+                    event.preventDefault();
+                    notification.close();
+                }
+              });
+    </script>
+
+
+</body>
+</html>

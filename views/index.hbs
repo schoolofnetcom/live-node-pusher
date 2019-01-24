@@ -1,0 +1,9 @@
+<div class="row">
+    <button class="btn btn-primary" id="btn_new_post">Generate new post</button>
+</div>
+<script>
+    $('#btn_new_post').on('click', async function() {
+        const result = await axios.post('/posts');
+        console.log(result);
+    });
+</script>
